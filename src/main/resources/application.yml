@@ -1,9 +1,13 @@
-#server:
-#  port: 8080
-#
-#spring:
-#  cloud:
-#    gateway:
+server:
+  port: 8080
+
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
 #      routes:
 #        - id: gateway-service
 #          uri: http://localhost:8081/
