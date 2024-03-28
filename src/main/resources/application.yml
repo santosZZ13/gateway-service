@@ -8,10 +8,23 @@ spring:
         locator:
           enabled: true
           lower-case-service-id: true
-#      routes:
-#        - id: gateway-service
-#          uri: http://localhost:8081/
-#          predicates:
-#            - Path=/api/auth/**
-#          filters:
-#            - AddRequestHeader=fist-request, first-request-header
+  #      routes:
+  #        - id: gateway-service
+  #          uri: http://localhost:8081/
+  #          predicates:
+  #            - Path=/api/auth/**
+  #          filters:
+  #            - AddRequestHeader=fist-request, first-request-header
+
+
+  data:
+    mongodb:
+      uri: mongodb+srv://quangnam130520:Z72BGxu7D8VmvHKq@cluster0.fwoaemp.mongodb.net/?retryWrites=true&w=majority
+      database: gateway
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    reactor.netty.http.client: DEBUG
+jwt:
+  secret: jwtsecret

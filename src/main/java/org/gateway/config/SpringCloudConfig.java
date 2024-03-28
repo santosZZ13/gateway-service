@@ -1,39 +1,34 @@
 package org.gateway.config;
 
 import lombok.AllArgsConstructor;
-import org.gateway.filter.CustomFilter;
-import org.springframework.cloud.gateway.filter.GlobalFilter;
+import lombok.extern.log4j.Log4j2;
+import org.gateway.filter.AuthenticationFilter;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import reactor.core.publisher.Mono;
 
 @Configuration
 @AllArgsConstructor
+@Log4j2
 public class SpringCloudConfig {
 
-	private final CustomFilter customFilter;
+	private final AuthenticationFilter authenticationFilter;
 
 	@Bean
 	public RouteLocator gatewayRoutes(RouteLocatorBuilder builder) {
 		return builder.routes()
 				.route(r -> r.path("/api/auth/**")
-						.filters(f -> f.filter(customFilter.apply(new CustomFilter.Config())))
+						.filters(f -> f.filter(authenticationFilter))
 						.uri("http://localhost:8081/")
 						.id("gateway-service")
+				)
+				.route(r -> r.path("/api/test/**")
+						.filters(f -> f.filter(authenticationFilter))
+						.uri("http://localhost:8081/")
+						.id("test-service")
 				)
 				.build();
 	}
 
-
-	@Bean
-	public GlobalFilter globalFilter() {
-		return (exchange, chain) -> {
-			System.out.println("First Global filter");
-			return chain.filter(exchange).then(Mono.fromRunnable(() -> {
-				System.out.println("Second Global filter");
-			}));
-		};
-	}
 }
