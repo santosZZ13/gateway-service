@@ -8,6 +8,8 @@ spring:
         locator:
           enabled: true
           lower-case-service-id: true
+#      redis-rate-limiter:
+#        burst-capacity-header:
   #      routes:
   #        - id: gateway-service
   #          uri: http://localhost:8081/
@@ -21,6 +23,18 @@ spring:
     mongodb:
       uri: mongodb+srv://quangnam130520:Z72BGxu7D8VmvHKq@cluster0.fwoaemp.mongodb.net/?retryWrites=true&w=majority
       database: gateway
+
+  redis:
+    host: localhost
+    port: 6379
+    timeout: 10000
+    lettuce:
+      pool:
+        max-active: 10
+        max-idle: 10
+        min-idle: 10
+        time-between-eviction-runs: 10000
+        max-wait: 10000
 
 logging:
   level:

@@ -23,23 +23,22 @@ import java.nio.charset.StandardCharsets;
 public class GlobalFilterImpl implements GlobalFilter, Ordered {
 	@Override
 	public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-//		ServerHttpRequest request = exchange.getRequest();
-//		//  Maybe save the request to the database
-//		return chain.filter(exchange).then(Mono.fromRunnable(() -> {
-//			// Maybe save the response to the database
-//			log.info("Post Filter Logic: Response code: {}", exchange.getResponse().getStatusCode());
-//		}));
+		ServerHttpRequest request = exchange.getRequest();
+		//  Maybe save the request to the database
+		return chain.filter(exchange).then(Mono.fromRunnable(() -> {
+			// Maybe save the response to the database
+			log.info("Post Filter Logic: Response code: {}", exchange.getResponse().getStatusCode());
+		}));
 
-
-		return getBodyFromRequest(exchange.getRequest())
-				.flatMap(body -> {
-					String bd = body;
-					log.info("Request body: {}", bd);
-					return chain.filter(exchange);
-				})
-				.then(Mono.fromRunnable(
-						() -> log.info("Post Filter Logic: Response code: {}", exchange.getResponse().getStatusCode())
-				));
+//		return getBodyFromRequest(exchange.getRequest())
+//				.flatMap(body -> {
+//					String bd = body;
+//					log.info("Request body: {}", bd);
+//					return chain.filter(exchange);
+//				})
+//				.then(Mono.fromRunnable(
+//						() -> log.info("Post Filter Logic: Response code: {}", exchange.getResponse().getStatusCode())
+//				));
 	}
 
 	@Override
