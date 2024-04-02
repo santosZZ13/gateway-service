@@ -8,8 +8,24 @@ spring:
         locator:
           enabled: true
           lower-case-service-id: true
-#      redis-rate-limiter:
-#        burst-capacity-header:
+
+#    vault:
+#      uri: http://localhost:8200
+#      host: localhost
+#      port: 8200
+#      authentication: token
+#      kv:
+#        enabled: true
+#      token: hvs.7vKKGJQTgjxRYalTmHVXnZjj
+#
+#  config:
+#    import: vault://
+
+
+
+
+  #      redis-rate-limiter:
+  #        burst-capacity-header:
   #      routes:
   #        - id: gateway-service
   #          uri: http://localhost:8081/
@@ -35,6 +51,15 @@ spring:
         min-idle: 10
         time-between-eviction-runs: 10000
         max-wait: 10000
+
+# Property for Spring Boot Actuator
+#management:
+#  endpoint:
+#    env:
+#      post:
+#        enabled: true
+
+
 
 logging:
   level:
