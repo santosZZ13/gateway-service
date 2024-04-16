@@ -3,6 +3,7 @@ package org.gateway.config;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.gateway.filter.AuthenticationFilter;
+import org.gateway.filter.RateLimiterHandlerFilterFunction;
 import org.springframework.cloud.gateway.filter.factory.GatewayFilterFactory;
 import org.springframework.cloud.gateway.filter.factory.RequestRateLimiterGatewayFilterFactory;
 import org.springframework.cloud.gateway.filter.ratelimit.KeyResolver;
@@ -11,9 +12,13 @@ import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.function.server.RouterFunction;
+import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import java.util.Objects;
+
+import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 @Configuration
 @AllArgsConstructor
@@ -21,7 +26,7 @@ import java.util.Objects;
 public class SpringCloudConfig {
 
 	private final AuthenticationFilter authenticationFilter;
-
+	private final RateLimiterHandlerFilterFunction rateLimiterHandlerFilterFunction;
 	@Bean
 	public RouteLocator gatewayRoutes(RouteLocatorBuilder builder) {
 		return builder.routes()
@@ -42,7 +47,16 @@ public class SpringCloudConfig {
 				.build();
 	}
 
-
+	@Bean
+	RouterFunction<ServerResponse> routerFunction() {
+		return route().GET("/api/gateway", serverRequest ->
+						ServerResponse.ok()
+								.contentType(org.springframework.http.MediaType.TEXT_PLAIN)
+								.body(Mono.just("Hello from Gateway"), String.class)
+				)
+				.filter(rateLimiterHandlerFilterFunction)
+				.build();
+	}
 
 	@Bean
 	public RedisRateLimiter redisRateLimiter() {
@@ -62,6 +76,7 @@ public class SpringCloudConfig {
 	 * We can customize the response by creating a bean of GatewayFilterFactory<RequestRateLimiterGatewayFilterFactory.Config> type.
 	 * We can override the denyResponse method to customize the response.
 	 * In this example, we are returning a JSON response with a 429 status code and a message.
+	 *
 	 * @Reference: <a href="https://www.linkedin.com/advice/0/how-do-you-implement-rate-limiting-spring-boot">...</a>
 	 * @Reference: <a href="https://stackoverflow.com/questions/44042412/how-to-set-rate-limit-for-each-user-in-spring-boot">...</a>
 	 * @Keywords: Spring Cloud Gateway, Rate Limiting, Rate Limiter,
