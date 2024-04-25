@@ -8,8 +8,13 @@ spring:
         locator:
           enabled: true
           lower-case-service-id: true
+#      routes:
+#        - id: after_route
+#          uri: https://example.org
+#          predicates:
+#            - Cookie=mycookie,mycookievalue
 
-#    vault:
+  #    vault:
 #      uri: http://localhost:8200
 #      host: localhost
 #      port: 8200
